@@ -128,4 +128,10 @@ citywise_results <- homicide_data_filtered %>%
   mutate(
     model = map(data, ~ glm(disposition2 ~ victim_age + victim_sex + victim_race, data = ., family = "binomial", control = list(maxit = 1000))),
     tidy_model = map(model, tidy)
-  ) 
+  ) %>%
+  unnest(tidy_model)
+
+# Filter rows based on the term column
+citywise_results <- citywise_results %>%
+  filter(str_detect(term, "victim_sexMale")) %>%
+  select(city_state, estimate, conf.low, conf.high)
