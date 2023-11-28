@@ -170,28 +170,23 @@ weather_df <- read_csv(file = file_path) %>%
     tmax = tmax / 10
   ) %>%
   select(name, id, everything())
+weather_df
 ```
-
-Do a linear regression first
+Remove rows with missing values
 ```{r}
-linear_regression <- function(data, indices) {
-  sample_data <- data[indices, ]
-  model <- lm(tmax ~ tmin + prcp, data = sample_data) #tmax, tmin, and prcp
-  r_squared <- summary(model)$r.squared #r_hat squared
-  beta1_beta2_log <- log(coef(model)[2] * coef(model)[3]) #log (beta_hat_1 * beta_hat_2)
-  c(r_squared, beta1_beta2_log)
-}
+weather_df <- na.omit(weather_df)
 ```
 
-Use broom::glance function, and cause of error messages
+
+Do a linear regression first and use broom::glance function
 ```{r}
 linear_regression <- function(data) {
   model <- lm(tmax ~ tmin + prcp, data = data) # tmax, tmin, and prcp
   glance_result <- broom::glance(model)
   tidy_result <- broom::tidy(model)
 
-  r_squared <- glance_result$r.squared
-  beta1_beta2_log <- log(tidy_result$estimate[2] * tidy_result$estimate[3])
+  r_squared <- glance_result$r.squared #r_hat squared
+  beta1_beta2_log <- log(tidy_result$estimate[2] * tidy_result$estimate[3]) #log (beta_hat_1 * beta_hat_2)
 
   c(r_squared, beta1_beta2_log)
 }
