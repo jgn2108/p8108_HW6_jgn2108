@@ -120,3 +120,12 @@ odds_ratio_estimate
 odds_ratio_ci
 ```
 
+Now do LR by city within a "tidy" worklow
+```{r}
+citywise_results <- homicide_data_filtered %>%
+  group_by(city_state) %>%
+  nest() %>%
+  mutate(
+    model = map(data, ~ glm(disposition2 ~ victim_age + victim_sex + victim_race, data = ., family = "binomial", control = list(maxit = 1000))),
+    tidy_model = map(model, tidy)
+  ) 
