@@ -44,14 +44,21 @@ homicide_data$reported_date <- as.Date(as.character(homicide_data$reported_date)
 
 # Format the date as MM/DD/YYYY
 homicide_data$reported_date <- format(homicide_data$reported_date, "%m/%d/%Y")
-
 ```
-
+Create first variable
 ```{r}
 # Create city_state variable
 homicide_data <- mutate(homicide_data, city_state = paste(city, state, sep = ", "))
+homicide_data
 ```
 
+Create a second binary factor variable
+```{r}
+homicide_data <- homicide_data %>%
+  mutate(disposition = factor(disposition, levels = c("Closed by arrest", "Closed without arrest")),
+         disposition2 = ifelse(disposition == 1, "Solved", "Unsolved"))
+homicide_data
+```
 
 
 Convert tibble into a standard df
@@ -59,46 +66,5 @@ Convert tibble into a standard df
 homicide_data_df <- as.data.frame(homicide_data)
 str(homicide_data_df)
 ```
-Create a new variable: city_state
-```{r}
-# Create city_state variable
-homicide_data <- mutate(homicide_data, city_state = paste(city, state, sep = ", "))
 
-# Summarize data
-summary_data <- homicide_data %>%
-  group_by(city_state) %>%
-  summarize(
-    total_homicides = n(),
-    unsolved_homicides = sum(disposition %in% c("Closed without arrest", "Open/No arrest"))
-  )
-
-print(summary_data)
-```
-
-Create a new variable: city_state
-```{r}
-# Create city_state variable
-homicide_data<- mutate(homicide_data, city_state = paste(city, state, sep = ", "))
-
-# Summarize data
-summary_data <- homicide_data %>%
-  group_by(city_state) %>%
-  summarize(
-    total_homicides = n(),
-    unsolved_homicides = sum(disposition %in% c("Closed without arrest", "Open/No arrest"))
-  )
-
-print(summary_data)
-```
-
-
-
-
-
-
-
-Create a new variable:
-```{r}
-
-```
 
