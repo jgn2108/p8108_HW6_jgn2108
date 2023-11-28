@@ -96,6 +96,27 @@ Fit a logistic regression model, outcome=disposition2
 ```{r}
 model <- glm(disposition2 ~ victim_age + victim_sex + victim_race, data = homicide_data_filtered, family = "binomial")
 summary(model) #model summary
-```
 
+```
+Now store it as an R object and get estimates and CIs for adjusted OR btw male vs. female victims
+```{r}
+save(model, file = "logistic_regression_model.RData") # Save the output of glm as an R object
+
+# Apply broom::tidy to the model
+tidy_model <- broom::tidy(model)
+print(tidy_model)
+
+# Extract the estimate and CI for the adjusted OR comparing male vs. female victims
+odds_ratio_estimate <- tidy_model %>%
+  filter(term == "victim_sexMale") %>%
+  select(estimate)
+
+odds_ratio_ci <- tidy_model %>%
+  filter(term == "victim_sexMale") %>%
+  select(matches("conf\\.low"), matches("conf\\.high"))
+
+
+odds_ratio_estimate
+odds_ratio_ci
+```
 
