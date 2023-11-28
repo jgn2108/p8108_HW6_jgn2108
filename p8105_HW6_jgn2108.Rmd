@@ -183,64 +183,36 @@ linear_regression <- function(data, indices) {
 }
 ```
 
-Use broom::glance function, and cause of error messages, check for NaNs in the results
+Use broom::glance function, and cause of error messages
 ```{r}
 linear_regression <- function(data) {
   model <- lm(tmax ~ tmin + prcp, data = data) # tmax, tmin, and prcp
   glance_result <- broom::glance(model)
   tidy_result <- broom::tidy(model)
 
-  # Check for NaNs in the results
-  if (any(is.na(glance_result$r.squared)) || any(is.na(tidy_result$estimate[2:3]))) {
-    warning("NaNs produced in linear regression. Returning NA values.")
-    return(c(NA, NA))
-  }
-
   r_squared <- glance_result$r.squared
   beta1_beta2_log <- log(tidy_result$estimate[2] * tidy_result$estimate[3])
 
   c(r_squared, beta1_beta2_log)
 }
-linear_regression
-```
-
-```{r}
-
+#linear_regression
 ```
 
 Now bootstrapping
-```{r, include=FALSE}
-set.seed(123)  # Set seed
-#bootstrap_results <- boot(data = weather_df, statistic = linear_regression, R = 50) NOT WORKING
-bootstrap_results <- lapply(1:5000, function(i) {
-  indices <- sample(nrow(weather_df), replace = TRUE)
-  sample_data <- weather_df[indices, ]
-  linear_regression(sample_data)
-})
-```
-
 ```{r}
-set.seed(123) 
+set.seed(1) 
 bootstrap_results <- matrix(0, nrow = 5000, ncol = 2)
-
-for (i in 1:5000) {
-  indices <- sample(nrow(weather_df), replace = TRUE)
-  sample_data <- weather_df[indices, ]
-  bootstrap_results[i, ] <- linear_regression(sample_data)
-}
 ```
 
-
+This is not working...many many error messages
 ```{r}
-weather_df =
-  crossv_mc(child_growth, 100) |> 
-  mutate(
-    train = map(train, as_tibble),
-    test = map(test, as_tibble))
-
-
-weather_df = 
-  crossv_mc(nonlin_df, 100)
+#for (i in 1:5000) {
+  #indices <- sample(nrow(weather_df), replace = TRUE)
+  #sample_data <- weather_df[indices, ]
+  #bootstrap_results[i, ] <- linear_regression(sample_data)
+#}
 ```
+
+
 
 
