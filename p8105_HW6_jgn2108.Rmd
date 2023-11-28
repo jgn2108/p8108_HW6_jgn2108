@@ -134,5 +134,24 @@ citywise_results <- homicide_data_filtered %>%
 
 citywise_results
 ```
-
+Check column names
 ```{r}
+names(citywise_results)
+```
+
+
+Plot this
+```{r}
+# Create a plot
+ggplot(citywise_results, aes(x = reorder(city_state, estimate), y = estimate, ymin = estimate - 1.96 * std.error, ymax = estimate + 1.96 * std.error)) +
+  geom_point(position = position_dodge(width = 0.2)) +
+  geom_errorbar(position = position_dodge(width = 0.2), width = 0.2) +
+  labs(title = "Estimated Odds Ratios and CIs for Each City",
+       x = "City",
+       y = "Estimated Odds Ratio") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+
