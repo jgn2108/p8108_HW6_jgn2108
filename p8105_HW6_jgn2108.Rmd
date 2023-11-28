@@ -75,6 +75,7 @@ homicide_data <- homicide_data %>%
   mutate(victim_age = as.numeric(victim_age))
 str(homicide_data)
 ```
+
 Make victim_race a factor variable
 ```{r}
 homicide_data <- homicide_data %>%
@@ -98,6 +99,7 @@ model <- glm(disposition2 ~ victim_age + victim_sex + victim_race, data = homici
 summary(model) #model summary
 
 ```
+
 Now store it as an R object and get estimates and CIs for adjusted OR btw male vs. female victims
 ```{r}
 save(model, file = "logistic_regression_model.RData") # Save the output of glm as an R object
@@ -128,9 +130,11 @@ citywise_results <- homicide_data_filtered %>%
   mutate(
     model = map(data, ~ glm(disposition2 ~ victim_age + victim_sex + victim_race, data = ., family = "binomial", control = list(maxit = 1000))),
     tidy_model = map(model, tidy)
-  ) %>%
-  unnest(tidy_model)
+  ) %>% unnest(tidy_model)
+```
 
+
+```{r}
 # Filter rows based on the term column
 citywise_results <- citywise_results %>%
   filter(str_detect(term, "victim_sexMale")) %>%
