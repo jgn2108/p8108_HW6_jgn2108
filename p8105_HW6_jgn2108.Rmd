@@ -75,14 +75,22 @@ homicide_data <- homicide_data %>%
   mutate(victim_age = as.numeric(victim_age))
 str(homicide_data)
 ```
-
-
-
-
-Convert tibble into a standard df
+Make victim_race a factor variable
 ```{r}
-homicide_data_df <- as.data.frame(homicide_data)
-str(homicide_data_df)
+homicide_data <- homicide_data %>%
+  mutate(victim_race = factor(victim_race, 
+                              levels = c("Hispanic", "White", "Black", "Asian", "Other"),
+                              labels = c(1, 2, 3, 4, 5),
+                              exclude = NULL))
+str(homicide_data)
 ```
+
+Filter out all victim_race that are not "White" or "Black"
+```{r}
+homicide_data_filtered <- homicide_data %>%
+  filter(victim_race %in% c(2, 3))
+homicide_data_filtered
+```
+
 
 
