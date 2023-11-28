@@ -60,6 +60,16 @@ homicide_data <- homicide_data %>%
 homicide_data
 ```
 
+Omit rows with the following city_state:"Dallas, TX"; "Phoenix, AZ"; "Kansas City, MO"; and "Tulsa, AL" 
+```{r}
+homicide_data <- homicide_data %>%
+  filter(!(city_state %in% c("Dallas, TX", "Phoenix, AZ", "Kansas City, MO", "Tulsa, AL")))
+homicide_data #from 52179 observations, down to 48507
+```
+
+
+
+
 
 Convert tibble into a standard df
 ```{r}
