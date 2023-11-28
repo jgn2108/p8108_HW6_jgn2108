@@ -31,12 +31,6 @@ homicide_data <- read_csv(url)
 # View the first few rows of the data
 head(homicide_data)
 ```
-Data cleaning (using skimr)
-```{r}
-# Use the skim() function directly from skimr without loading the whole package
-skim_summary <- skimr::skim(homicide_data)
-print(skim_summary)
-```
 Reformat reported_date
 ```{r}
 # Convert numeric date to Date object
@@ -52,11 +46,19 @@ homicide_data <- mutate(homicide_data, city_state = paste(city, state, sep = ", 
 homicide_data
 ```
 
-Create a second binary factor variable
+Create a binary factor variable re: disposition
 ```{r}
 homicide_data <- homicide_data %>%
-  mutate(disposition = factor(disposition, levels = c("Closed by arrest", "Closed without arrest")),
-         disposition2 = ifelse(disposition == 1, "Solved", "Unsolved"))
+  mutate(disposition = relevel(factor(disposition, levels = c("Closed by arrest", "Closed without arrest")),
+                               ref = "Closed by arrest"))
+str(homicide_data)
+```
+
+```{r}
+homicide_data <- homicide_data %>%
+  mutate(disposition2 = factor(ifelse(disposition == "Closed by arrest", "solved", "unsolved"),
+                               levels = c("solved", "unsolved"),
+                               exclude = NULL))
 homicide_data
 ```
 
@@ -67,6 +69,12 @@ homicide_data <- homicide_data %>%
 homicide_data #from 52179 observations, down to 48507
 ```
 
+Make victim_age numeric
+```{r}
+homicide_data <- homicide_data %>%
+  mutate(victim_age = as.numeric(victim_age))
+str(homicide_data)
+```
 
 
 
