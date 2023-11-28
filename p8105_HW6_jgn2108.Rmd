@@ -18,6 +18,9 @@ library(ggplot2)
 library(tidyr)
 library(stringr)
 library(boot)
+library(modelr)
+library(nlme)
+library(mgcv)
 ```
 
 ## Problem 1
@@ -174,8 +177,8 @@ Do a linear regression first
 linear_regression <- function(data, indices) {
   sample_data <- data[indices, ]
   model <- lm(tmax ~ tmin + prcp, data = sample_data)
-  r_squared <- summary(model)$r.squared
-  beta1_beta2_log <- log(coef(model)[2] * coef(model)[3])
+  r_squared <- summary(model)$r.squared #r_hat squared
+  beta1_beta2_log <- log(coef(model)[2] * coef(model)[3]) #log (beta_hat_1 * beta_hat_2)
   c(r_squared, beta1_beta2_log)
 }
 ```
@@ -184,6 +187,8 @@ Now bootstrapping
 ```{r}
 set.seed(123)  # Set seed
 #bootstrap_results <- boot(data = weather_df, statistic = linear_regression, R = 100)
+weather_df = 
+  crossv_mc(nonlin_df, 100)
 ```
 
 
