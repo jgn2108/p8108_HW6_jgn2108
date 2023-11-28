@@ -5,28 +5,88 @@ date: "`r Sys.Date()`"
 output: github_document
 ---
 
+## Set up
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(tidyverse)
+library(skimr)
+library(dplyr)
+library(broom)
+library(purrr)
+library(broom)
+library(ggplot2)
+library(tidyr)
+library(stringr)
 ```
 
-## GitHub Documents
+## Problem 1
 
-This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
+Loading data: Washington Post homicide data
+```{r}
+url <- "https://raw.githubusercontent.com/washingtonpost/data-homicides/master/homicide-data.csv"
 
-## Including Code
+# Read the CSV file into a data frame
+homicide_data <- read_csv(url)
 
-You can include R code in the document as follows:
-
-```{r cars}
-summary(cars)
+# View the first few rows of the data
+head(homicide_data)
 ```
 
-## Including Plots
+Data cleaning (using skimr)
+```{r}
+# Use the skim() function directly from skimr without loading the whole package
+skim_summary <- skimr::skim(homicide_data)
+print(skim_summary)
+```
+Reformat reported_date
+```{r}
+# Convert numeric date to Date object
+homicide_data$reported_date <- as.Date(as.character(homicide_data$reported_date), format = "%Y%m%d")
 
-You can also embed plots, for example:
+# Format the date as MM/DD/YYYY
+homicide_data$reported_date <- format(homicide_data$reported_date, "%m/%d/%Y")
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```
+Create a new variable: city_state
+```{r}
+# Create city_state variable
+homicide_data<- mutate(homicide_data, city_state = paste(city, state, sep = ", "))
+
+# Summarize data
+summary_data <- homicide_data %>%
+  group_by(city_state) %>%
+  summarize(
+    total_homicides = n(),
+    unsolved_homicides = sum(disposition %in% c("Closed without arrest", "Open/No arrest"))
+  )
+
+print(summary_data)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Create a new variable: city_state
+```{r}
+# Create city_state variable
+homicide_data<- mutate(homicide_data, city_state = paste(city, state, sep = ", "))
+
+# Summarize data
+summary_data <- homicide_data %>%
+  group_by(city_state) %>%
+  summarize(
+    total_homicides = n(),
+    unsolved_homicides = sum(disposition %in% c("Closed without arrest", "Open/No arrest"))
+  )
+
+print(summary_data)
+
+Convert tibble into a standard df
+```{r}
+homicide_data_df <- as.data.frame(homicide_data)
+str(homicide_data_df)
+```
+
+
+Create a new variable:
+```{r}
+
+```
+
