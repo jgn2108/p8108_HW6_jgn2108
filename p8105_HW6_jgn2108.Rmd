@@ -17,6 +17,7 @@ library(broom)
 library(ggplot2)
 library(tidyr)
 library(stringr)
+library(boot)
 ```
 
 ## Problem 1
@@ -153,5 +154,35 @@ ggplot(citywise_results, aes(x = reorder(city_state, estimate), y = estimate, ym
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+## Problem 2
+
+Get Central Park weather data
+```{r}
+file_path <- "/Users/jgn/Desktop/P8105/HW6/nynoaadat.csv"
+
+weather_df <- read_csv(file = file_path) %>%
+  mutate(
+    name = recode(id, USW00094728 = "CentralPark_NY"),
+    tmin = tmin / 10,
+    tmax = tmax / 10
+  ) %>%
+  select(name, id, everything())
+```
+
+Do a linear regression first
+```{r}
+linear_regression <- function(data, indices) {
+  sample_data <- data[indices, ]
+  model <- lm(tmax ~ tmin + prcp, data = sample_data)
+  r_squared <- summary(model)$r.squared
+  beta1_beta2_log <- log(coef(model)[2] * coef(model)[3])
+  c(r_squared, beta1_beta2_log)
+}
+```
+
+Now bootstrapping
+```{r}
+
+```
 
 
