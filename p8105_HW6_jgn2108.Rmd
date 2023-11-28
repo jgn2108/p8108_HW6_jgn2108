@@ -182,7 +182,8 @@ linear_regression <- function(data, indices) {
 
 Now bootstrapping
 ```{r}
-
+set.seed(123)  # Set seed
+#bootstrap_results <- boot(data = weather_df, statistic = linear_regression, R = 100)
 ```
 
 
