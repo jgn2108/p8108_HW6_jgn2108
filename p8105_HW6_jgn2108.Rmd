@@ -89,8 +89,13 @@ Filter out all victim_race that are not "White" or "Black"
 ```{r}
 homicide_data_filtered <- homicide_data %>%
   filter(victim_race %in% c(2, 3))
-homicide_data_filtered
+str(homicide_data_filtered) #from 52179 rows, now n=39693
 ```
 
+Fit a logistic regression model, outcome=disposition2
+```{r}
+model <- glm(disposition2 ~ victim_age + victim_sex + victim_race, data = homicide_data_filtered, family = "binomial")
+summary(model) #model summary
+```
 
 
